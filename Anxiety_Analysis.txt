@@ -1,0 +1,91 @@
+CREATE TABLE Symptoms (
+    Indicator TEXT,
+    Group_mm TEXT,
+    State TEXT,
+    Subgroup TEXT,
+    Time_Period_Start_Date TEXT,
+    Time_Period_End_Date TEXT,
+    Value_nn REAL,
+    Lower_Confidence_Interval REAL,
+    Upper_Confidence_Interval REAL,
+    Quartile_Range TEXT
+);
+LOAD DATA INFILE 'C:/Users/91957/Downloads/Manohar_cleaned_data.csv' 
+INTO TABLE Symptoms
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+#Explore Data
+-- Query to retrieve rows
+SELECT * FROM Symptoms;
+
+-- Summary statistics
+SELECT 
+    State,
+    COUNT(*) AS `Total_Entries`,
+    AVG(Value_nn) AS `Average_Value`,
+    SUM(Value_nn) AS `Total_Value`,
+    MIN(Value_nn) AS `Minimum_Value`,
+    MAX(Value_nn) AS `Maximum_Value`,
+    AVG(Lower_Confidence_Interval) AS `Average_Lower_CI`,
+    MIN(Lower_Confidence_Interval) AS `Minimum_Lower_CI`,
+    MAX(Lower_Confidence_Interval) AS `Maximum_Lower_CI`,
+    AVG(Upper_Confidence_Interval) AS `Average_Upper_CI`,
+    MIN(Upper_Confidence_Interval) AS `Minimum_Upper_CI`,
+    MAX(Upper_Confidence_Interval) AS `Maximum_Upper_CI`
+FROM Symptoms
+GROUP BY State;
+
+
+-- Execute simple queries
+SELECT * FROM Symptoms LIMIT 5;  -- View the first 5 rows
+SELECT COUNT(*) FROM Symptoms;  -- Count total rows
+SELECT State, AVG(Value_nn) AS Avg_Symptoms FROM Symptoms GROUP BY State;  -- Mean symptoms by state
+
+
+
+
+
+
+# Calculate the average value across all states:
+SELECT AVG(Value_nn) AS Average_Value FROM Symptoms;
+
+# Find the maximum and minimum values recorded and the corresponding states:
+SELECT State, MAX(Value_nn) AS Max_Value FROM Symptoms GROUP BY State;
+SELECT State, MIN(Value_nn) AS Min_Value FROM Symptoms GROUP BY State;
+
+# Count the number of entries per state:
+SELECT State, COUNT(*) AS Number_of_Entries FROM Symptoms GROUP BY State;
+
+
+
+
+
+
+
+
+# Find entries with Value_nn greater than the average of all entries:
+SELECT *
+FROM Symptoms
+WHERE Value_nn > (SELECT AVG(Value_nn) FROM Symptoms);
+
+#Retrieve the entry with the highest Value_nn for each state:
+
+SELECT State, MAX(Value_nn) AS Highest_Value
+FROM Symptoms
+GROUP BY State;
+
+#Select the top 5 states with the highest average value:
+SELECT State, AVG(Value_nn) AS Average_Value
+FROM Symptoms
+GROUP BY State
+ORDER BY Average_Value DESC
+LIMIT 5;
+
+
+
+
+
+
+
